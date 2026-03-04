@@ -1,0 +1,372 @@
+/* content.css - X 智能回复插件样式 */
+
+/* 智能回复按钮 */
+.xsr-btn {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 13px;
+  margin-left: 8px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(29, 155, 240, 0.08);
+  outline: 1.5px solid #1d9bf0;
+  outline-offset: -1.5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d9bf0;
+  transition: background 0.2s ease, outline-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  position: relative;
+  vertical-align: middle;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.xsr-btn:hover {
+  background: rgba(29, 155, 240, 0.15);
+  outline-color: #7856ff;
+  color: #7856ff;
+  box-shadow: 0 0 10px rgba(29, 155, 240, 0.25);
+}
+
+.xsr-btn:active {
+  background: rgba(29, 155, 240, 0.22);
+}
+
+.xsr-btn-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* 弹窗遮罩 */
+.xsr-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: xsr-fade-in 0.2s ease;
+}
+
+@keyframes xsr-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 弹窗主体 */
+.xsr-modal {
+  background: rgba(15, 20, 25, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%;
+  max-width: 560px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(29,155,240,0.1);
+  animation: xsr-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #e7e9ea;
+  z-index: 999999;
+}
+
+@keyframes xsr-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 弹窗头部 */
+.xsr-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.xsr-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1d9bf0, #7856ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xsr-modal-title::before {
+  content: '✨';
+  -webkit-text-fill-color: initial;
+}
+
+.xsr-close-btn {
+  background: rgba(255,255,255,0.08);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: #71767b;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.xsr-close-btn:hover {
+  background: rgba(255,255,255,0.15);
+  color: #e7e9ea;
+}
+
+/* 推文预览 */
+.xsr-tweet-preview {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: #71767b;
+  line-height: 1.5;
+}
+
+.xsr-tweet-label {
+  font-size: 11px;
+  color: #536471;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.xsr-tweet-text {
+  color: #e7e9ea;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 加载状态 */
+.xsr-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  gap: 16px;
+}
+
+.xsr-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(29,155,240,0.2);
+  border-top-color: #1d9bf0;
+  border-radius: 50%;
+  animation: xsr-spin 0.8s linear infinite;
+}
+
+@keyframes xsr-spin {
+  to { transform: rotate(360deg); }
+}
+
+.xsr-loading-text {
+  color: #71767b;
+  font-size: 14px;
+  animation: xsr-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes xsr-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* 回复列表 */
+.xsr-replies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 回复卡片 */
+.xsr-reply-card {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  animation: xsr-fade-in 0.3s ease;
+}
+
+.xsr-reply-card:hover {
+  border-color: rgba(29,155,240,0.3);
+  background: rgba(29,155,240,0.05);
+}
+
+.xsr-reply-card.xsr-selected {
+  border-color: #1d9bf0;
+  background: rgba(29,155,240,0.08);
+}
+
+.xsr-reply-text {
+  color: #e7e9ea;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 48px;
+  outline: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  resize: none;
+  cursor: text;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.xsr-reply-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.xsr-char-count {
+  font-size: 12px;
+  color: #536471;
+}
+
+.xsr-use-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1d9bf0, #7856ff);
+  border: none;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.xsr-use-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(29,155,240,0.4);
+}
+
+/* 底部操作栏 */
+.xsr-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.xsr-auto-submit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #71767b;
+  cursor: pointer;
+  user-select: none;
+}
+
+.xsr-auto-submit input[type="checkbox"] {
+  accent-color: #1d9bf0;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.xsr-regenerate-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: #e7e9ea;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.xsr-regenerate-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.25);
+}
+
+/* 错误状态 */
+.xsr-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  gap: 12px;
+  text-align: center;
+}
+
+.xsr-error-icon {
+  font-size: 36px;
+}
+
+.xsr-error-msg {
+  color: #ff6b6b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.xsr-error-link {
+  color: #1d9bf0;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 13px;
+}
+
+/* 成功填充动画 */
+.xsr-fill-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  gap: 12px;
+}
+
+.xsr-success-icon {
+  font-size: 48px;
+  animation: xsr-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes xsr-bounce {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.xsr-success-text {
+  font-size: 15px;
+  color: #e7e9ea;
+  font-weight: 500;
+}

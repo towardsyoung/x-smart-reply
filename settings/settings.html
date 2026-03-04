@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X 智能回复 - 设置</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings-container">
+    
+    <!-- 头部 -->
+    <header class="settings-header">
+      <div class="logo">
+        <img src="../icons/icon48.png" alt="X 智能回复" class="logo-icon">
+        <div>
+          <h1 class="logo-title">X 智能回复</h1>
+          <p class="logo-subtitle">AI 驱动的 X 平台推文回复助手</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="settings-main">
+      
+      <!-- LLM 配置卡片 -->
+      <section class="settings-card">
+        <div class="card-header">
+          <span class="card-icon">🤖</span>
+          <h2 class="card-title">AI 模型配置</h2>
+        </div>
+
+        <!-- 提供商选择 -->
+        <div class="form-group">
+          <label class="form-label">LLM 提供商</label>
+          <div class="provider-grid" id="provider-grid">
+            <div class="provider-card active" data-provider="openai">
+              <div class="provider-logo">🟢</div>
+              <div class="provider-name">OpenAI</div>
+              <div class="provider-models">GPT-4o, GPT-4o-mini</div>
+            </div>
+            <div class="provider-card" data-provider="custom">
+              <div class="provider-logo">⚡</div>
+              <div class="provider-name">自定义接口</div>
+              <div class="provider-models">DeepSeek, Qwen, 等</div>
+            </div>
+            <div class="provider-card" data-provider="gemini">
+              <div class="provider-logo">🔵</div>
+              <div class="provider-name">Google Gemini</div>
+              <div class="provider-models">Gemini 1.5 Flash/Pro</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 自定义 Base URL（仅 custom 显示） -->
+        <div class="form-group" id="baseurl-group" style="display:none">
+          <label class="form-label" for="base-url">API Base URL</label>
+          <input
+            type="text"
+            id="base-url"
+            class="form-input"
+            placeholder="https://api.deepseek.com/v1"
+          />
+          <p class="form-hint">填写 OpenAI 兼容接口的基础地址（无需 /chat/completions 后缀）</p>
+        </div>
+
+        <!-- API Key -->
+        <div class="form-group">
+          <label class="form-label" for="api-key">API Key</label>
+          <div class="input-with-toggle">
+            <input
+              type="password"
+              id="api-key"
+              class="form-input"
+              placeholder="sk-xxxxxxxxxxxxxxxx"
+            />
+            <button class="toggle-visibility" id="toggle-key" title="显示/隐藏">👁</button>
+          </div>
+          <p class="form-hint">API Key 仅存储在本地，不会上传到任何服务器</p>
+        </div>
+
+        <!-- 模型名称 -->
+        <div class="form-group">
+          <label class="form-label" for="model-name">模型名称</label>
+          <div class="model-presets" id="model-presets">
+            <!-- 动态渲染 -->
+          </div>
+          <input
+            type="text"
+            id="model-name"
+            class="form-input"
+            placeholder="gpt-4o-mini"
+          />
+          <p class="form-hint">输入模型标识符，或点击上方预设快速填入</p>
+        </div>
+
+        <!-- 测试连接 -->
+        <div class="form-group">
+          <button class="btn btn-outline" id="test-connection">
+            <span class="btn-icon">🔌</span>
+            测试连接
+          </button>
+          <div class="test-result" id="test-result"></div>
+        </div>
+      </section>
+
+      <!-- 回复偏好卡片 -->
+      <section class="settings-card">
+        <div class="card-header">
+          <span class="card-icon">⚙️</span>
+          <h2 class="card-title">回复偏好</h2>
+        </div>
+
+        <div class="form-row">
+          <!-- 回复语言 -->
+          <div class="form-group flex-1">
+            <label class="form-label" for="reply-language">回复语言</label>
+            <select id="reply-language" class="form-select">
+              <option value="auto">与推文同语言</option>
+              <option value="zh">强制中文</option>
+              <option value="en">强制英文</option>
+            </select>
+          </div>
+
+          <!-- 生成数量 -->
+          <div class="form-group flex-1">
+            <label class="form-label" for="reply-count">生成条数</label>
+            <select id="reply-count" class="form-select">
+              <option value="2">2 条</option>
+              <option value="3" selected>3 条</option>
+              <option value="4">4 条</option>
+              <option value="5">5 条</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 底部操作栏 -->
+    <footer class="settings-footer">
+      <div class="save-status" id="save-status"></div>
+      <button class="btn btn-primary" id="save-btn">
+        <span class="btn-icon">💾</span>
+        保存设置
+      </button>
+    </footer>
+
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>
