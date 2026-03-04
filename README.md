@@ -13,11 +13,13 @@
 
 ## 效果预览
 - **模型配置**
-<img width="1344" height="1326" alt="image" src="https://github.com/user-attachments/assets/046bdb2d-f291-4905-bb32-6b8bda505c47" />
+<img width="600"  alt="image" src="https://github.com/user-attachments/assets/046bdb2d-f291-4905-bb32-6b8bda505c47" />
+
 - **推文详情页智能回复**
-<img width="1262" height="1046" alt="image" src="https://github.com/user-attachments/assets/cce162e1-91a9-4a45-a66a-99b63636ddbd" />
+<img width="600"  alt="image" src="https://github.com/user-attachments/assets/cce162e1-91a9-4a45-a66a-99b63636ddbd" />
 - **智能回复生成**
-<img width="1170" height="1222" alt="image" src="https://github.com/user-attachments/assets/be635608-dd46-4123-8a86-36cc57a06a92" />
+<img width="600" alt="image" src="https://github.com/user-attachments/assets/be635608-dd46-4123-8a86-36cc57a06a92" />
+
 - **自动回填或自动回复**
 点击【使用此回复】会自动回填输入框，或者勾选“自动回复”直接提交回复
 
