@@ -65,8 +65,8 @@ Requirements:
 5. Make each reply distinct in tone and approach
 6. ${langInstruction}
 
-Return ONLY a valid JSON array of strings, no other text. Example format:
-["Reply one here", "Reply two here", "Reply three here"]`;
+Return ONLY a valid JSON object in this exact format, no other text:
+{"replies": ["Reply one here", "Reply two here", "Reply three here"]}`;
 }
 
 // 调用 OpenAI 兼容 API
@@ -101,10 +101,63 @@ async function callOpenAICompatible(tweetContent, config) {
   const content = data.choices?.[0]?.message?.content?.trim();
   if (!content) throw new Error('API 返回内容为空');
 
-  // 解析 JSON 数组
-  const jsonMatch = content.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) throw new Error('API 返回格式错误，无法解析回复列表');
-  return JSON.parse(jsonMatch[0]);
+  return parseRepliesFromText(content);
+}
+
+// 从 LLM 返回文本中健壮地解析回复列表
+function parseRepliesFromText(content) {
+  // 1. 直接 JSON.parse
+  try {
+    const obj = JSON.parse(content);
+    if (obj && obj.replies && Array.isArray(obj.replies)) return obj.replies.filter(r => typeof r === 'string' && r.length > 0);
+    if (Array.isArray(obj)) return obj.filter(r => typeof r === 'string' && r.length > 0);
+  } catch (_) {}
+
+  // 2. 修复 trailing comma 后再解析（Gemini 偶发末尾逗号问题）
+  try {
+    const fixed = content.replace(/,(\s*[}\]])/g, '$1');
+    const obj = JSON.parse(fixed);
+    if (obj && obj.replies && Array.isArray(obj.replies)) return obj.replies.filter(r => typeof r === 'string' && r.length > 0);
+    if (Array.isArray(obj)) return obj.filter(r => typeof r === 'string' && r.length > 0);
+  } catch (_) {}
+
+  // 3. 提取 JSON 数组片段
+  const arrMatch = content.match(/\[[\s\S]*\]/);
+  if (arrMatch) {
+    try {
+      const fixed = arrMatch[0].replace(/,(\s*\])/g, '$1');
+      const arr = JSON.parse(fixed);
+      if (Array.isArray(arr)) return arr.filter(r => typeof r === 'string' && r.length > 0);
+    } catch (_) {}
+  }
+
+  // 4. 提取 JSON 对象片段（应对 "replies": [...] 前无花括号的情况）
+  try {
+    const wrapped = `{${content.match(/"replies"\s*:\s*\[[\s\S]*\]/)?.[0] || ''}}`;
+    const obj = JSON.parse(wrapped.replace(/,(\s*\])/g, '$1'));
+    if (obj.replies && Array.isArray(obj.replies)) return obj.replies.filter(r => typeof r === 'string' && r.length > 0);
+  } catch (_) {}
+
+  // 5. 提取所有双引号字符串，过滤掉 JSON 结构行（如 "replies": [ 等）
+  const quoted = [];
+  const re = /"((?:[^"\\]|\\.)*)"/g;
+  let m;
+  while ((m = re.exec(content)) !== null) {
+    const s = m[1].replace(/\\"/g, '"').trim();
+    // 跳过 JSON key（后跟冒号或方括号），以及过短的片段
+    if (s.length > 10 && !/^replies$/.test(s) && !content.slice(m.index + m[0].length).trimStart().startsWith(':')) {
+      quoted.push(s);
+    }
+  }
+  if (quoted.length > 0) return quoted;
+
+  // 6. 最终降级：按行分割
+  const lines = content.split('\n')
+    .map(l => l.replace(/^[\d\.\-\*、]+\s*/, '').replace(/^"|",?$|",?$/g, '').trim())
+    .filter(l => l.length > 5 && !/"replies"\s*:/.test(l) && !/^\[/.test(l) && !/^\]/.test(l));
+  if (lines.length > 0) return lines;
+
+  throw new Error('API 返回格式错误，无法解析回复列表');
 }
 
 // 调用 Google Gemini API
@@ -126,6 +179,7 @@ async function callGemini(tweetContent, config) {
       generationConfig: {
         temperature: 0.85,
         maxOutputTokens: 800,
+        response_mime_type: 'application/json',  // 强制 JSON 输出
       }
     }),
   });
@@ -139,9 +193,7 @@ async function callGemini(tweetContent, config) {
   const content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
   if (!content) throw new Error('Gemini API 返回内容为空');
 
-  const jsonMatch = content.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) throw new Error('API 返回格式错误');
-  return JSON.parse(jsonMatch[0]);
+  return parseRepliesFromText(content);
 }
 
 // 主生成函数
